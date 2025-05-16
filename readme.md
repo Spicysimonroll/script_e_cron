@@ -44,6 +44,9 @@ sudo crontab -e
 0 2 * * * /bin/bash -c 'tar -czf /opt/backup/backup_home_$(date +\%Y\%m\%d).tar.gz /home'
 ```
 
+> 📌 I nomi dei file includono la data (es. `20250516`) per evitare sovrascritture tra i backup giornalieri.
+
+
 **Eliminazione dei backup più vecchi di 7 giorni:**
 
 ```cron
@@ -60,6 +63,15 @@ Controllare che il servizio `cron` sia attivo:
 
 ```bash
 sudo systemctl status cron
+```
+
+> ⚠️ Se il servizio `cron` non è attivo, i backup non verranno eseguiti. **Assicurarsi di avviarlo e abilitarlo**.
+
+Per avviare e abilitare `cron`:
+
+```bash
+sudo systemctl start cron
+sudo systemctl enable cron
 ```
 
 Eseguire manualmente i comandi per testare il funzionamento:
