@@ -24,7 +24,11 @@ sudo chown root:root /opt/backup
 sudo chmod 700 /opt/backup
 ```
 
-> ℹ️ I seguenti comandi creano la cartella nel caso non esistesse e configurano il proprietario ed i relativi permessi
+> ℹ️ I seguenti comandi creano la cartella nel caso non esistesse e configurano il proprietario ed i relativi permessi.
+
+> 🔐 La directory `/opt` è una posizione di sistema riservata, accessibile in scrittura solo all’utente `root`.
+Per questo motivo è necessario anteporre `sudo` ai comandi, in modo da eseguirli con privilegi di amministratore ed
+evitare errori di "permesso negato".
 
 ---
 
@@ -36,7 +40,10 @@ Modificare il `crontab` dell’utente `root`:
 sudo crontab -e
 ```
 
-#### ➕ Aggiungere le seguenti righe:
+> ℹ️ Poiché i backup verranno salvati in `/opt/backup`, una directory in cui solo l'utente `root` ha permessi di scrittura,
+è fondamentale modificare il crontab con privilegi di amministratore.
+
+#### ➕ Una volta aperto l'editor di testo, aggiungere le seguenti righe:
 
 **Backup giornaliero alle 2:00:**
 
@@ -50,7 +57,7 @@ sudo crontab -e
 **Eliminazione dei backup più vecchi di 7 giorni:**
 
 ```cron
-5 2 * * * /bin/bash -c 'find /opt/backup -name "backup_home_*.tar.gz" -mtime +6 -delete'
+5 2 * * * /bin/bash -c 'find /opt/backup -name "backup_home_*.tar.gz" -mtime +7 -delete'
 ```
 
 > ℹ️ L’eliminazione è separata di 5 minuti per evitare conflitti durante la creazione del file.
@@ -74,11 +81,11 @@ sudo systemctl start cron
 sudo systemctl enable cron
 ```
 
-Eseguire manualmente i comandi per testare il funzionamento:
+Per testare manualmente il funzionamento:
 
 ```bash
 sudo tar -czf /opt/backup/backup_home_$(date +%Y%m%d).tar.gz /home
-sudo find /opt/backup -name "backup_home_*.tar.gz" -mtime +6 -delete
+sudo find /opt/backup -name "backup_home_*.tar.gz" -mtime +7 -delete
 ls -l /opt/backup
 ```
 
